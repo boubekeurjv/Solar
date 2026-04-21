@@ -3,85 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>الطاقة الشمسية - حساب حسب الأجهزة أو حزم جاهزة (DZD)</title>
+    <title>حاسبة الطاقة الشمسية - أنظمة Off-grid / Hybrid / طوارئ مع تفاصيل الأسعار (DZD)</title>
     <style>
         * {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
         }
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #e9edf2 100%);
-            margin: 0;
             padding: 20px;
-            min-height: 100vh;
         }
         .container {
-            max-width: 1600px;
+            max-width: 1500px;
             margin: 0 auto;
             background: white;
             border-radius: 32px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
-            padding: 20px 25px 35px 25px;
         }
-        h1 {
-            color: #1e3c72;
-            font-size: 1.8rem;
-            margin: 0 0 5px 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
         }
-        h1:before {
-            content: "☀️";
+        .hero h1 {
             font-size: 2rem;
+            margin-bottom: 15px;
         }
-        .sub {
-            color: #2c5282;
-            border-right: 4px solid #f39c12;
-            padding-right: 15px;
-            margin: 10px 0 25px 0;
-        }
-        .mode-switch {
-            display: flex;
-            gap: 20px;
-            background: #f1f5f9;
-            padding: 12px 20px;
-            border-radius: 60px;
-            margin-bottom: 25px;
-            width: fit-content;
-        }
-        .mode-btn {
-            background: transparent;
-            border: none;
-            padding: 8px 24px;
+        .hero h1 span {
+            background: #f39c12;
+            padding: 0 12px;
             border-radius: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: 0.2s;
+            display: inline-block;
         }
-        .mode-btn.active {
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+        .feature {
+            background: rgba(255,255,255,0.15);
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-primary {
             background: #f39c12;
             color: #1e293b;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 12px 28px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            transition: 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 12px 28px;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.2s;
+            cursor: pointer;
+        }
+        .btn-primary:hover { background: #e67e22; transform: translateY(-2px);}
+        .btn-secondary:hover { background: white; color: #1e3c72; }
+        
+        /* Main content */
+        .main-content {
+            padding: 25px 30px;
+        }
+        .tool-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .tool-header h2 {
+            color: #1e3c72;
+            font-size: 1.6rem;
         }
         .two-columns {
             display: flex;
             flex-wrap: wrap;
-            gap: 25px;
+            gap: 30px;
+            margin-top: 20px;
         }
-        .devices-section, .packages-section {
+        .devices-section {
             flex: 2;
             min-width: 280px;
         }
         .results-section {
-            flex: 1.5;
-            min-width: 280px;
-        }
-        .products-section {
-            flex: 1.8;
-            min-width: 260px;
+            flex: 2;
+            min-width: 320px;
         }
         .card {
             background: #ffffff;
@@ -91,14 +125,12 @@
             margin-bottom: 25px;
             border: 1px solid #e2e8f0;
         }
-        .card h2 {
-            font-size: 1.4rem;
-            margin-top: 0;
-            margin-bottom: 18px;
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
             color: #1e293b;
-            border-bottom: 2px solid #f1c40f;
-            display: inline-block;
-            padding-bottom: 5px;
+            border-right: 4px solid #f39c12;
+            padding-right: 12px;
         }
         table {
             width: 100%;
@@ -126,25 +158,14 @@
             cursor: pointer;
             margin: 5px 5px 0 0;
         }
-        .btn:hover { background: #e67e22; transform: translateY(-2px); color: white; }
         .btn-danger { background: #ef4444; color: white; }
         .btn-success { background: #2ecc71; color: white; }
         .btn-whatsapp { background: #25D366; color: white; }
-        .btn-call { background: #3498db; color: white; }
-        .total-bar {
-            background: #f1f5f9;
-            padding: 12px;
-            border-radius: 24px;
-            margin: 15px 0;
-            text-align: center;
-            font-weight: bold;
-        }
         .result-box {
             background: #fef9e6;
             border-radius: 20px;
-            padding: 12px 18px;
-            margin: 12px 0;
-            border-right: 6px solid #f1c40f;
+            padding: 15px;
+            margin: 15px 0;
         }
         .result-item {
             display: flex;
@@ -152,153 +173,228 @@
             padding: 8px 0;
             border-bottom: 1px dashed #e2e8f0;
         }
-        .price { font-weight: 800; color: #e67e22; }
-        .package-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-            margin-top: 15px;
+        .price { font-weight: 800; color: #e67e22; font-size: 1.2rem; }
+        .note-box {
+            background: #e6f7ff;
+            padding: 12px;
+            border-radius: 20px;
+            margin: 10px 0;
+            font-size: 0.85rem;
+        }
+        .warning-box {
+            background: #fff3e0;
+            border-right: 4px solid #e67e22;
+            padding: 12px;
+            border-radius: 20px;
+            margin: 10px 0;
+            font-size: 0.85rem;
+        }
+        .packages-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 15px 0;
         }
         .package-card {
-            background: #f9fafb;
-            border-radius: 24px;
-            padding: 16px;
+            flex: 1;
+            min-width: 160px;
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 12px;
             text-align: center;
             border: 1px solid #e2e8f0;
-            transition: 0.2s;
             cursor: pointer;
+            transition: 0.2s;
         }
-        .package-card:hover { transform: translateY(-5px); box-shadow: 0 12px 20px rgba(0,0,0,0.1); }
-        .package-name { font-size: 1.4rem; font-weight: bold; color: #1e3c72; }
-        .package-price { font-size: 1.3rem; color: #e67e22; margin: 10px 0; }
-        .package-details { font-size: 0.8rem; text-align: right; padding-right: 10px; }
-        .order-summary {
-            background: #ecfdf5;
-            padding: 15px;
-            border-radius: 24px;
-            margin-top: 15px;
+        .package-card.selected {
+            border: 2px solid #f39c12;
+            background: #fff7e6;
+        }
+        .system-type-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .system-card {
+            flex: 1;
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .system-card.selected {
+            border: 2px solid #f39c12;
+            background: #fff7e6;
+        }
+        .emergency-hours {
+            margin-top: 12px;
+            padding: 10px;
+            background: #fef3c7;
+            border-radius: 16px;
+            display: none;
+        }
+        .cost-details {
+            font-size: 0.9rem;
+            background: #f1f5f9;
+            border-radius: 16px;
+            padding: 10px;
+            margin-top: 10px;
         }
         .hidden { display: none; }
-        footer { text-align: center; margin-top: 30px; font-size: 0.75rem; color: #475569; }
-        @media (max-width: 1000px) { .two-columns { flex-direction: column; } }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #f1f5f9;
+            font-size: 0.8rem;
+            color: #475569;
+        }
+        @media (max-width: 800px) {
+            .hero h1 { font-size: 1.5rem; }
+            .main-content { padding: 20px; }
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>حاسبة الطاقة الشمسية للمنزل</h1>
-    <div class="sub">🇩🇿 بالدينار الجزائري - اختر طريقة الطلب</div>
-
-    <!-- أزرار التبديل بين الوضعين -->
-    <div class="mode-switch">
-        <button id="modeDevicesBtn" class="mode-btn active">📊 حساب حسب أجهزتي</button>
-        <button id="modePackagesBtn" class="mode-btn">📦 طلب حزمة جاهزة (بدون حساب)</button>
-    </div>
-
-    <div class="two-columns">
-        <!-- العمود الأيسر: إما جدول الأجهزة أو الحزم الجاهزة -->
-        <div class="devices-section" id="devicesSection">
-            <div class="card">
-                <h2>🔌 قائمة الأجهزة المنزلية</h2>
-                <div style="overflow-x: auto;">
-                    <table id="devicesTable">
-                        <thead><tr><th>الجهاز</th><th>واط</th><th>ساعات/يوم</th><th>كمية</th><th>Wh/يوم</th><th></th></tr></thead>
-                        <tbody id="devicesTbody"></tbody>
-                    </table>
-                </div>
-                <div>
-                    <button class="btn" id="addDeviceBtn">➕ إضافة جهاز</button>
-                    <button class="btn btn-success" id="calculateBtn">🔄 حساب المتطلبات</button>
-                </div>
-                <div class="total-bar">إجمالي الطاقة اليومية: <span id="totalWh">0</span> Wh</div>
-            </div>
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>احسب نظام الطاقة الشمسية الخاص بك <span>في أقل من 30 ثانية</span> ☀️</h1>
+        <p>وفر فاتورة الكهرباء واحصل على نظام مناسب لاحتياجاتك بدقة.</p>
+        <div class="features">
+            <div class="feature">🔋 حساب تلقائي للألواح، البطاريات، والتكلفة</div>
+            <div class="feature">⚡ نتائج فورية بدون خبرة تقنية</div>
+            <div class="feature">💰 تقدير سعر واقعي حسب السوق الجزائري</div>
         </div>
-
-        <div class="packages-section hidden" id="packagesSection">
-            <div class="card">
-                <h2>📦 اختر الحزمة المناسبة لك</h2>
-                <div class="package-grid" id="packagesGrid">
-                    <!-- سيتم إنشاء الحزم بواسطة JS -->
-                </div>
-                <div class="note" style="margin-top:12px;">🔋 جميع الحزم تستخدم بطاريات AGM (أداء ممتاز وعمر طويل)</div>
-            </div>
-        </div>
-
-        <!-- العمود الأوسط: نتائج الحساب أو تفاصيل الحزمة المختارة -->
-        <div class="results-section">
-            <div class="card" id="resultsCard">
-                <h2>⚙️ تفاصيل النظام</h2>
-                <div id="dynamicResults">
-                    <!-- نتائج الحساب حسب الأجهزة (تظهر افتراضياً) -->
-                    <div class="result-box" id="customResults">
-                        <div class="result-item"><span>🔆 الطاقة اليومية:</span><span id="dailyEnergyRes">0</span><span> Wh</span></div>
-                        <div class="result-item"><span>🛢️ سعة البطاريات (AGM):</span><span id="batteryCapacityRes">0</span><span> kWh</span></div>
-                        <div class="result-item"><span>🔋 جهد النظام:</span><span id="systemVoltageRes">24</span><span> V</span></div>
-                        <div class="result-item"><span>⚡ قدرة الألواح:</span><span id="panelPowerRes">0</span><span> Wp</span></div>
-                        <div class="result-item"><span>📐 عدد الألواح (400W):</span><span id="panelCountRes">0</span><span> لوح</span></div>
-                        <div class="result-item"><span>🔄 قدرة العاكس:</span><span id="inverterPowerRes">0</span><span> VA</span></div>
-                        <div class="result-item"><span>🎛️ تيار منظم الشحن:</span><span id="controllerAmpsRes">0</span><span> A</span></div>
-                    </div>
-                    <div class="result-box hidden" id="packageResults">
-                        <!-- ستظهر تفاصيل الحزمة المختارة هنا -->
-                        <div class="result-item"><span>📦 الحزمة:</span><span id="packageNameRes">---</span></div>
-                        <div class="result-item"><span>🔋 سعة البطاريات (AGM):</span><span id="packageBatteryRes">0</span><span> kWh</span></div>
-                        <div class="result-item"><span>☀️ عدد الألواح:</span><span id="packagePanelsRes">0</span><span> لوح</span></div>
-                        <div class="result-item"><span>🔄 قدرة العاكس:</span><span id="packageInverterRes">0</span><span> VA</span></div>
-                        <div class="result-item"><span>🎛️ منظم الشحن:</span><span id="packageControllerRes">0</span><span> A</span></div>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <h2>💰 التكلفة التقديرية (DZD)</h2>
-                <div id="priceContainer">
-                    <div class="result-box" id="customPrice">
-                        <div class="result-item"><span>الألواح:</span><span id="costPanels">0</span><span> دج</span></div>
-                        <div class="result-item"><span>البطاريات AGM:</span><span id="costBatteries">0</span><span> دج</span></div>
-                        <div class="result-item"><span>العاكس:</span><span id="costInverter">0</span><span> دج</span></div>
-                        <div class="result-item"><span>منظم الشحن:</span><span id="costController">0</span><span> دج</span></div>
-                        <div class="result-item"><span>هياكل/كابلات:</span><span id="costAccessories">0</span><span> دج</span></div>
-                        <div class="result-item" style="border-top:2px solid #f1c40f;"><span>💰 الإجمالي:</span><span id="totalCost" class="price">0</span><span> دج</span></div>
-                    </div>
-                    <div class="result-box hidden" id="packagePrice">
-                        <div class="result-item"><span>💰 سعر الحزمة كاملة:</span><span id="packageTotalPrice" class="price">0</span><span> دج</span></div>
-                        <div class="result-item"><span>يشمل التركيب والتوصيل:</span><span>نعم (تقديري)</span></div>
-                    </div>
-                </div>
-                <div style="margin-top:10px;" id="batteryTypeSelector">
-                    <label>نوع البطارية (في وضع الحساب):</label>
-                    <select id="batteryType">
-                        <option value="agm" selected>🔋 AGM (افتراضي) - 25000 دج/kWh</option>
-                        <option value="lithium">⚡ ليثيوم أيون - 35000 دج/kWh</option>
-                        <option value="lead">🔘 حمض رصاص - 18000 دج/kWh</option>
-                    </select>
-                    <button id="refreshBatteryBtn" class="btn" style="background:#3498db;">تحديث</button>
-                </div>
-            </div>
-            <div class="card" style="text-align:center;">
-                <h2>📞 تواصل معنا</h2>
-                <a href="tel:0541864110" class="btn btn-call" style="display:inline-block; text-decoration:none;">📞 اتصل: 0541864110</a>
-                <button id="confirmOrderBtn" class="btn btn-whatsapp">📨 تأكيد الطلب عبر واتساب</button>
-                <div class="order-summary" id="orderSummaryPreview">
-                    <strong>ملخص طلبك:</strong> سيظهر بعد اختيار الحزمة أو حساب الأجهزة.
-                </div>
-            </div>
-        </div>
-
-        <!-- عمود معرض المعدات (كما هو) -->
-        <div class="products-section">
-            <div class="card">
-                <h2>🛒 معرض المعدات (للاسترشاد)</h2>
-                <div class="product-grid" id="productsGrid"></div>
-                <div class="note" style="font-size:0.7rem;">انقر على الصورة لتغييرها (ألصق رابط صورة حقيقي)</div>
-            </div>
+        <div class="hero-buttons">
+            <a href="#tool" class="btn-primary">📊 احسب الآن</a>
+            <button id="heroWhatsappBtn" class="btn-secondary">📲 اطلب عرض سعر عبر واتساب</button>
         </div>
     </div>
-    <footer>الحزم الجاهزة مصممة ببطاريات AGM وتناسب معظم المنازل. الأسعار تقريبية قابلة للتغيير حسب السوق.</footer>
+
+    <div class="main-content" id="tool">
+        <div class="tool-header">
+            <h2>🧮 أدخل الأجهزة المنزلية الخاصة بك</h2>
+            <p>سنقوم بحساب النظام الشمسي المناسب لك تلقائيًا:</p>
+        </div>
+
+        <div class="two-columns">
+            <!-- عمود الأجهزة -->
+            <div class="devices-section">
+                <!-- نوع النظام -->
+                <div class="card">
+                    <h3>⚙️ نوع النظام</h3>
+                    <div class="system-type-row">
+                        <div class="system-card selected" id="offgridCard" onclick="setSystemType('offgrid')">
+                            🔋 Off-grid<br>
+                            <small>استقلال كامل</small>
+                        </div>
+                        <div class="system-card" id="hybridCard" onclick="setSystemType('hybrid')">
+                            ⚡ Hybrid<br>
+                            <small>موصى به (شبكة + شمس)</small>
+                        </div>
+                        <div class="system-card" id="emergencyCard" onclick="setSystemType('emergency')">
+                            🚨 طوارئ<br>
+                            <small>يعمل لساعتين ليلاً فقط</small>
+                        </div>
+                    </div>
+                    <div id="emergencyOptions" class="emergency-hours">
+                        <label>⏱️ عدد ساعات التشغيل ليلاً (طوارئ): </label>
+                        <input type="number" id="emergencyHours" value="2" step="0.5" min="0.5" max="6" style="width:100px;">
+                        <button id="updateEmergencyBtn" class="btn" style="background:#e67e22;">تطبيق</button>
+                        <div class="warning-box" style="margin-top:8px;">
+                            ⚠️ <strong>تنبيه:</strong> هذا النظام مخصص للطوارئ فقط (إضاءة، شحن جوال، ثلاجة لفترة قصيرة). لا يشغل أجهزة ثقيلة (مكيف، غسالة، مكواة). البطارية مصممة لـ <span id="emergencyHoursDisplay">2</span> ساعة فقط في الليل.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>🔌 قائمة الأجهزة</h3>
+                    <div style="overflow-x: auto;">
+                        <table id="devicesTable">
+                            <thead><tr><th>الجهاز</th><th>الواط</th><th>ساعات/يوم</th><th>الكمية</th><th>Wh/يوم</th><th></th></tr></thead>
+                            <tbody id="devicesTbody"></tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <button class="btn" id="addDeviceBtn">➕ إضافة جهاز</button>
+                        <button class="btn btn-success" id="calculateBtn">🔄 حساب النظام</button>
+                    </div>
+                    <div class="note-box" style="margin-top:15px;">
+                        ⚙️ معاملات الحساب: خسائر النظام 15% (Loss factor)، أيام استقلالية البطارية <strong id="autonomyDaysValue">1.5</strong> يوم (قابل للتعديل لـ Off-grid/Hybrid).
+                    </div>
+                    <div id="autonomyControl" style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                        <label>أيام الاستقلالية (للأنظمة الكاملة): </label>
+                        <input type="number" id="autonomyDays" value="1.5" step="0.5" min="0.5" style="width:80px;">
+                        <button id="updateAutonomyBtn" class="btn" style="background:#3498db;">تحديد</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- عمود النتائج والتكلفة التفصيلية -->
+            <div class="results-section">
+                <div class="card">
+                    <h3>📊 نتائج النظام المناسب لك</h3>
+                    <div class="result-box" id="resultsBox">
+                        <div class="result-item"><span>🔆 الطاقة اليومية المحتاجة:</span><span id="dailyEnergyRes">0</span><span> Wh</span></div>
+                        <div class="result-item"><span>⚡ قدرة الألواح المطلوبة (Peak):</span><span id="panelPowerRes">0</span><span> Wp</span></div>
+                        <div class="result-item"><span>🔢 عدد الألواح (400W):</span><span id="panelCountRes">0</span><span> لوح</span></div>
+                        <div class="result-item"><span>🛢️ سعة البطاريات:</span><span id="batteryCapacityRes">0</span><span> kWh</span></div>
+                        <div class="result-item"><span>🔄 قدرة العاكس (مُوصى):</span><span id="inverterPowerRes">0</span><span> VA (≥1500VA)</span></div>
+                        <div class="result-item"><span>🎛️ تيار منظم الشحن MPPT:</span><span id="controllerAmpsRes">0</span><span> A</span></div>
+                    </div>
+                    <div class="note-box" id="systemNoteBox">
+                        <span id="systemNote">🔋 النظام مستقل 100% ويعتمد على البطاريات بالكامل.</span>
+                    </div>
+                    <div class="note-box">
+                        ✅ <strong>هذا النظام مناسب لـ:</strong><br>
+                        • حسب اختيارك (Off-grid / Hybrid / طوارئ)<br>
+                        ⚠️ <strong>ملاحظة:</strong> في وضع الطوارئ، البطارية صغيرة وتغطي فقط الساعات المحددة.<br>
+                        💡 <strong>نصيحة:</strong> يمكن ترقية البطارية لاحقاً.
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>💰 تفاصيل التكلفة (DZD)</h3>
+                    <div class="cost-details" id="costDetails">
+                        <!-- سيتم ملؤها بواسطة JS -->
+                    </div>
+                    <div class="result-box" id="packagePriceBox">
+                        <div class="result-item"><span>💰 المجموع التقريبي:</span><span id="totalCostDisplay" class="price">0</span><span> دج</span></div>
+                        <div class="result-item"><span>يشمل: ألواح، بطاريات، عاكس، منظم، كابلات، هياكل</span><span>✅</span></div>
+                    </div>
+                    <div class="packages-row" id="packagesContainer">
+                        <!-- باقات البطاريات -->
+                    </div>
+                    <button id="orderWhatsappBtn" class="btn btn-whatsapp" style="width:100%; margin-top:10px;">📲 اطلب هذا النظام عبر واتساب</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        الأسعار تقديرية (متوسط السوق الجزائري 2026). نظام الطوارئ يحسب البطارية بناءً على عدد ساعات التشغيل الليلية، ولا يحتاج أيام استقلالية. يفضل استشارة فني.
+    </footer>
 </div>
 
 <script>
-    // ---------- البيانات الأساسية ----------
+    // ---------- متغيرات عامة ----------
     let devices = [];
+    let autonomyDays = 1.5;               // أيام استقلالية (لـ offgrid/hybrid)
+    let currentBatteryType = "agm";       // agm, gel, lithium
+    let systemType = "offgrid";           // offgrid, hybrid, emergency
+    let emergencyNightHours = 2;          // ساعات الطوارئ ليلاً
+
+    // تعريف الباقات وأسعارها لكل kWh
+    const packages = {
+        agm: { name: "اقتصادية (AGM)", pricePerKwh: 25000, description: "مناسبة للاستخدام العادي" },
+        gel: { name: "متوسطة (GEL)", pricePerKwh: 30000, description: "عمر أطول وأداء أفضل" },
+        lithium: { name: "احترافية (Lithium)", pricePerKwh: 42000, description: "أفضل خيار (عمر طويل + كفاءة عالية)" }
+    };
+
+    // الأجهزة الافتراضية
     const defaultDevices = [
         { name: "ثلاجة", watt: 150, hours: 10, quantity: 1 },
         { name: "إنارة LED", watt: 80, hours: 6, quantity: 1 },
@@ -306,22 +402,11 @@
         { name: "غسالة", watt: 500, hours: 1, quantity: 1 }
     ];
 
-    // تعريف الحزم الجاهزة (جميعها ببطاريات AGM)
-    const packages = [
-        { name: "حزمة 1kW", power: 1000, panels: 3, batteryKwh: 2.5, inverterVA: 1200, controllerA: 30, price: 185000, details: "3 ألواح 400W + بطارية AGM 2.5kWh + عاكس 1200VA + منظم 30A" },
-        { name: "حزمة 2kW", power: 2000, panels: 5, batteryKwh: 5, inverterVA: 2400, controllerA: 50, price: 330000, details: "5 ألواح 400W + بطارية AGM 5kWh + عاكس 2400VA + منظم 50A" },
-        { name: "حزمة 3kW", power: 3000, panels: 8, batteryKwh: 7.5, inverterVA: 3600, controllerA: 80, price: 490000, details: "8 ألواح 400W + بطارية AGM 7.5kWh + عاكس 3600VA + منظم 80A" },
-        { name: "حزمة 5kW", power: 5000, panels: 13, batteryKwh: 12.5, inverterVA: 6000, controllerA: 120, price: 790000, details: "13 لوح 400W + بطارية AGM 12.5kWh + عاكس 6000VA + منظم 120A" }
-    ];
-
-    let currentMode = "devices"; // "devices" or "packages"
-    let selectedPackage = packages[0]; // افتراضي أول حزمة
-
-    // ---------- دوال وضع الأجهزة ----------
+    // ---------- دوال الأجهزة ----------
     function loadDevices() {
         devices = defaultDevices.map(d => ({ ...d }));
         renderDevicesTable();
-        calcTotal();
+        calculateSystem();
     }
 
     function renderDevicesTable() {
@@ -329,250 +414,250 @@
         tbody.innerHTML = '';
         devices.forEach((dev, idx) => {
             const row = tbody.insertRow();
-            row.insertCell(0).innerHTML = `<input type="text" value="${dev.name}" onchange="devices[${idx}].name=this.value; calcTotal();">`;
-            row.insertCell(1).innerHTML = `<input type="number" value="${dev.watt}" step="any" onchange="devices[${idx}].watt=parseFloat(this.value)||0; calcTotal();">`;
-            row.insertCell(2).innerHTML = `<input type="number" value="${dev.hours}" step="0.5" onchange="devices[${idx}].hours=parseFloat(this.value)||0; calcTotal();">`;
-            row.insertCell(3).innerHTML = `<input type="number" value="${dev.quantity}" step="1" min="1" onchange="devices[${idx}].quantity=parseInt(this.value)||1; calcTotal();">`;
+            row.insertCell(0).innerHTML = `<input type="text" value="${dev.name}" onchange="devices[${idx}].name=this.value; calculateSystem();">`;
+            row.insertCell(1).innerHTML = `<input type="number" value="${dev.watt}" step="any" onchange="devices[${idx}].watt=parseFloat(this.value)||0; calculateSystem();">`;
+            row.insertCell(2).innerHTML = `<input type="number" value="${dev.hours}" step="0.5" onchange="devices[${idx}].hours=parseFloat(this.value)||0; calculateSystem();">`;
+            row.insertCell(3).innerHTML = `<input type="number" value="${dev.quantity}" step="1" min="1" onchange="devices[${idx}].quantity=parseInt(this.value)||1; calculateSystem();">`;
             const daily = (dev.watt * dev.hours * dev.quantity).toFixed(1);
             row.insertCell(4).innerText = daily;
             const delBtn = document.createElement('button');
             delBtn.innerText = '🗑️';
             delBtn.className = 'btn-danger';
             delBtn.style.padding = '4px 8px';
-            delBtn.onclick = () => { devices.splice(idx,1); renderDevicesTable(); calcTotal(); };
+            delBtn.onclick = () => { devices.splice(idx,1); renderDevicesTable(); calculateSystem(); };
             row.insertCell(5).appendChild(delBtn);
         });
-        if(devices.length===0){
+        if(devices.length === 0){
             const emptyRow = tbody.insertRow();
-            emptyRow.insertCell(0).colSpan=6;
+            emptyRow.insertCell(0).colSpan = 6;
             emptyRow.innerText = "لا توجد أجهزة، أضف جهازاً";
         }
     }
 
-    function getTotalWh() {
+    function getTotalDailyWh() {
         return devices.reduce((sum, d) => sum + (d.watt * d.hours * d.quantity), 0);
     }
 
-    function calcTotal() {
-        if(currentMode !== "devices") return;
-        const totalWh = getTotalWh();
-        document.getElementById('totalWh').innerText = totalWh.toFixed(1);
-        calculateSystem(totalWh);
+    // ---------- دالة اختيار نوع النظام ----------
+    function setSystemType(type) {
+        systemType = type;
+        // تحديث المظهر
+        document.getElementById('offgridCard').classList.remove('selected');
+        document.getElementById('hybridCard').classList.remove('selected');
+        document.getElementById('emergencyCard').classList.remove('selected');
+        if(type === 'offgrid') document.getElementById('offgridCard').classList.add('selected');
+        else if(type === 'hybrid') document.getElementById('hybridCard').classList.add('selected');
+        else document.getElementById('emergencyCard').classList.add('selected');
+        
+        // إظهار/إخفاء خيارات الطوارئ
+        const emergencyDiv = document.getElementById('emergencyOptions');
+        const autonomyControl = document.getElementById('autonomyControl');
+        if(type === 'emergency') {
+            emergencyDiv.style.display = 'block';
+            autonomyControl.style.display = 'none';
+        } else {
+            emergencyDiv.style.display = 'none';
+            autonomyControl.style.display = 'flex';
+        }
+        calculateSystem();
     }
 
-    function calculateSystem(totalDailyWh) {
-        const peakSun = 5;
-        const efficiency = 0.85;
-        const autonomy = 1;
-        let batteryType = document.getElementById('batteryType').value;
-        let dod = batteryType === 'agm' ? 0.6 : (batteryType === 'lithium' ? 0.8 : 0.5);
-        const batteryPricePerKwh = batteryType === 'agm' ? 25000 : (batteryType === 'lithium' ? 35000 : 18000);
+    // تحديث ساعات الطوارئ
+    function updateEmergencyHours() {
+        let val = parseFloat(document.getElementById('emergencyHours').value);
+        if(!isNaN(val) && val > 0) {
+            emergencyNightHours = val;
+            document.getElementById('emergencyHoursDisplay').innerText = emergencyNightHours;
+            calculateSystem();
+        }
+    }
+
+    // ---------- الحسابات الرئيسية ----------
+    function calculateSystem() {
+        const totalWh = getTotalDailyWh();
+        const lossFactor = 0.85;      // 15% خسائر
+        const peakSunHours = 5;
+        const batteryEfficiency = 0.9;
         
-        const energyFromPanels = totalDailyWh / efficiency;
-        let requiredWatts = energyFromPanels / peakSun;
-        requiredWatts = Math.ceil(requiredWatts / 10) * 10;
+        // عمق التفريغ حسب نوع البطارية
+        let dod = 0.6;   // AGM
+        if(currentBatteryType === 'gel') dod = 0.7;
+        if(currentBatteryType === 'lithium') dod = 0.85;
+        
+        // الطاقة اللازمة من الألواح بعد الخسائر (نفسه للكل)
+        const energyFromPanels = totalWh / lossFactor;
+        let requiredPanelWatts = energyFromPanels / peakSunHours;
+        requiredPanelWatts = Math.ceil(requiredPanelWatts / 10) * 10;
         const panelWatt = 400;
-        let panelCount = Math.ceil(requiredWatts / panelWatt);
+        let panelCount = Math.ceil(requiredPanelWatts / panelWatt);
         let actualPanelPower = panelCount * panelWatt;
         
-        let batteryKWh = (totalDailyWh * autonomy) / (dod * 0.9 * 1000);
-        batteryKWh = Math.ceil(batteryKWh * 10) / 10;
+        // حساب سعة البطارية حسب نوع النظام
+        let batteryKWh = 0;
+        let systemNoteText = "";
         
+        if(systemType === 'offgrid') {
+            let batteryFactor = 1;
+            batteryKWh = (totalWh * autonomyDays) / (dod * batteryEfficiency * 1000);
+            systemNoteText = "🔋 النظام مستقل 100% (Off-grid) ويعتمد على البطاريات بالكامل. مناسب للمناطق النائية.";
+        } 
+        else if(systemType === 'hybrid') {
+            let batteryFactor = 0.5;
+            batteryKWh = (totalWh * autonomyDays * batteryFactor) / (dod * batteryEfficiency * 1000);
+            systemNoteText = "⚡ النظام هجين (Hybrid): يعتمد على الشمس + الشبكة، البطارية أقل لتقليل التكلفة.";
+        } 
+        else { // emergency
+            // حساب الطاقة المستهلكة في الساعة (متوسط) = إجمالي الطاقة اليومية / 24
+            let avgHourlyWh = totalWh / 24;
+            let requiredNightEnergy = avgHourlyWh * emergencyNightHours;
+            batteryKWh = requiredNightEnergy / (dod * batteryEfficiency * 1000);
+            systemNoteText = `🚨 نظام طوارئ: يعمل فقط ${emergencyNightHours} ساعة ليلاً. لا يشغل أجهزة عالية الاستهلاك (مكيف، غسالة).`;
+        }
+        
+        batteryKWh = Math.ceil(batteryKWh * 10) / 10;
+        // جهد النظام
         let systemVoltage = actualPanelPower < 800 ? 12 : (actualPanelPower < 3000 ? 24 : 48);
+        // قدرة العاكس: ذروة الأحمال * 1.25 على الأقل 1500VA
         let peakLoad = devices.reduce((sum,d) => sum + (d.watt * d.quantity), 0);
-        let inverterPower = Math.ceil(Math.max(peakLoad * 1.25, 500) / 100) * 100;
+        let inverterPower = Math.ceil(Math.max(peakLoad * 1.25, 1500) / 100) * 100;
+        // تيار منظم الشحن
         let controllerCurrent = Math.ceil((actualPanelPower / systemVoltage) * 1.25 / 5) * 5;
         
         // تحديث واجهة النتائج
-        document.getElementById('dailyEnergyRes').innerText = totalDailyWh.toFixed(0);
-        document.getElementById('batteryCapacityRes').innerText = batteryKWh;
-        document.getElementById('systemVoltageRes').innerText = systemVoltage;
+        document.getElementById('dailyEnergyRes').innerText = totalWh.toFixed(0);
         document.getElementById('panelPowerRes').innerText = actualPanelPower;
         document.getElementById('panelCountRes').innerText = panelCount;
+        document.getElementById('batteryCapacityRes').innerText = batteryKWh;
         document.getElementById('inverterPowerRes').innerText = inverterPower;
         document.getElementById('controllerAmpsRes').innerText = controllerCurrent;
+        document.getElementById('systemNote').innerHTML = systemNoteText;
         
-        // أسعار
-        const panelPrice = 13000;
-        let panelsCost = panelCount * panelPrice;
-        let batteriesCost = batteryKWh * batteryPricePerKwh;
-        let inverterCost = inverterPower * 30;
-        let controllerCost = controllerCurrent * 350;
-        let accessoriesCost = panelsCost * 0.15;
-        let totalCost = panelsCost + batteriesCost + inverterCost + controllerCost + accessoriesCost;
+        // تحديث عرض أيام الاستقلالية (للتذكير)
+        document.getElementById('autonomyDaysValue').innerText = autonomyDays;
         
-        document.getElementById('costPanels').innerText = Math.round(panelsCost).toLocaleString();
-        document.getElementById('costBatteries').innerText = Math.round(batteriesCost).toLocaleString();
-        document.getElementById('costInverter').innerText = Math.round(inverterCost).toLocaleString();
-        document.getElementById('costController').innerText = Math.round(controllerCost).toLocaleString();
-        document.getElementById('costAccessories').innerText = Math.round(accessoriesCost).toLocaleString();
-        document.getElementById('totalCost').innerHTML = Math.round(totalCost).toLocaleString();
-        
-        let summary = `📋 الطلب حسب أجهزتي:\nالطاقة اليومية: ${totalDailyWh.toFixed(0)} Wh\nبطاريات ${batteryKWh} kWh (${batteryType.toUpperCase()})\nألواح: ${panelCount}×400W\nالتكلفة: ${Math.round(totalCost).toLocaleString()} دج`;
-        document.getElementById('orderSummaryPreview').innerHTML = `<strong>ملخص طلبك:</strong><br>${summary.replace(/\n/g,'<br>')}`;
-        window.lastOrderData = { type: "custom", totalCost, summary, batteryKWh, panelCount, inverterPower, batteryType };
+        // حساب التكلفة التفصيلية وتحديث الباقات
+        updateCostAndPackages(batteryKWh, panelCount, inverterPower, controllerCurrent);
     }
-
-    // ---------- دوال وضع الحزم الجاهزة ----------
-    function renderPackages() {
-        const grid = document.getElementById('packagesGrid');
-        grid.innerHTML = '';
-        packages.forEach(pkg => {
-            const card = document.createElement('div');
-            card.className = 'package-card';
+    
+    function updateCostAndPackages(batteryKWh, panelCount, inverterPower, controllerCurrent) {
+        // تكلفة المكونات الثابتة (ألواح، عاكس، منظم، كابلات، هياكل) - أسعار السوق الجزائري
+        const panelPrice = 23000;      // سعر لوح 400W
+        let panelsCost = panelCount * panelPrice;
+        let inverterCost = inverterPower * 35;     // 35 دج/واط
+        let controllerCost = controllerCurrent * 400;
+        let accessoriesCost = panelsCost * 0.15;
+        let fixedCost = panelsCost + inverterCost + controllerCost + accessoriesCost;
+        
+        // عرض تفاصيل التكلفة
+        const costDetailsDiv = document.getElementById('costDetails');
+        costDetailsDiv.innerHTML = `
+            <div class="result-item"><span>🟡 الألواح (${panelCount} × 400W):</span><span>${Math.round(panelsCost).toLocaleString()} دج</span></div>
+            <div class="result-item"><span>🟢 العاكس (${inverterPower} VA):</span><span>${Math.round(inverterCost).toLocaleString()} دج</span></div>
+            <div class="result-item"><span>🔵 منظم الشحن (${controllerCurrent} A):</span><span>${Math.round(controllerCost).toLocaleString()} دج</span></div>
+            <div class="result-item"><span>📦 هياكل وكابلات:</span><span>${Math.round(accessoriesCost).toLocaleString()} دج</span></div>
+        `;
+        
+        // تحديث الباقات وعرض تكلفة البطارية + الإجمالي
+        const container = document.getElementById('packagesContainer');
+        container.innerHTML = '';
+        let selectedPrice = 0;
+        for (let [key, pkg] of Object.entries(packages)) {
+            let batteryCost = batteryKWh * pkg.pricePerKwh;
+            let total = fixedCost + batteryCost;
+            let card = document.createElement('div');
+            card.className = `package-card ${currentBatteryType === key ? 'selected' : ''}`;
             card.onclick = () => {
-                selectedPackage = pkg;
-                displayPackageDetails(pkg);
+                currentBatteryType = key;
+                calculateSystem();   // إعادة الحساب مع الباقة الجديدة
             };
             card.innerHTML = `
-                <div class="package-name">${pkg.name}</div>
-                <div class="package-price">${pkg.price.toLocaleString()} دج</div>
-                <div class="package-details">${pkg.details}</div>
-                <button class="btn" style="margin-top:10px;">اختر هذه الحزمة</button>
+                <div class="package-name">🔹 ${pkg.name}</div>
+                <div class="package-price">~${Math.round(total).toLocaleString()} دج</div>
+                <div style="font-size:0.75rem;">${pkg.description}</div>
+                <div style="font-size:0.7rem;">(بطارية: ${Math.round(batteryCost).toLocaleString()} دج)</div>
             `;
-            grid.appendChild(card);
-        });
-    }
-
-    function displayPackageDetails(pkg) {
-        // إظهار تفاصيل الحزمة في قسم النتائج
-        document.getElementById('packageNameRes').innerText = pkg.name;
-        document.getElementById('packageBatteryRes').innerText = pkg.batteryKwh;
-        document.getElementById('packagePanelsRes').innerText = pkg.panels;
-        document.getElementById('packageInverterRes').innerText = pkg.inverterVA;
-        document.getElementById('packageControllerRes').innerText = pkg.controllerA;
-        document.getElementById('packageTotalPrice').innerHTML = pkg.price.toLocaleString();
-        
-        let summary = `📦 طلب حزمة جاهزة: ${pkg.name}\nالسعر: ${pkg.price.toLocaleString()} دج\nالمكونات: ${pkg.details}`;
-        document.getElementById('orderSummaryPreview').innerHTML = `<strong>ملخص طلبك:</strong><br>${summary.replace(/\n/g,'<br>')}`;
-        window.lastOrderData = { type: "package", packageName: pkg.name, totalCost: pkg.price, summary, details: pkg.details };
-    }
-
-    // ---------- التبديل بين الوضعين ----------
-    function setMode(mode) {
-        currentMode = mode;
-        const devicesSection = document.getElementById('devicesSection');
-        const packagesSection = document.getElementById('packagesSection');
-        const customResults = document.getElementById('customResults');
-        const packageResults = document.getElementById('packageResults');
-        const customPrice = document.getElementById('customPrice');
-        const packagePrice = document.getElementById('packagePrice');
-        const batterySelector = document.getElementById('batteryTypeSelector');
-        
-        if (mode === 'devices') {
-            devicesSection.classList.remove('hidden');
-            packagesSection.classList.add('hidden');
-            customResults.classList.remove('hidden');
-            packageResults.classList.add('hidden');
-            customPrice.classList.remove('hidden');
-            packagePrice.classList.add('hidden');
-            batterySelector.style.display = 'block';
-            // إعادة حساب الأجهزة
-            calcTotal();
-        } else {
-            devicesSection.classList.add('hidden');
-            packagesSection.classList.remove('hidden');
-            customResults.classList.add('hidden');
-            packageResults.classList.remove('hidden');
-            customPrice.classList.add('hidden');
-            packagePrice.classList.remove('hidden');
-            batterySelector.style.display = 'none';
-            // عرض أول حزمة بشكل تلقائي
-            if (!selectedPackage) selectedPackage = packages[0];
-            displayPackageDetails(selectedPackage);
+            container.appendChild(card);
+            if (currentBatteryType === key) selectedPrice = total;
         }
-        // تحديث النشاط على الأزرار
-        document.getElementById('modeDevicesBtn').classList.toggle('active', mode === 'devices');
-        document.getElementById('modePackagesBtn').classList.toggle('active', mode === 'packages');
+        document.getElementById('totalCostDisplay').innerHTML = Math.round(selectedPrice).toLocaleString();
+        
+        // تخزين البيانات لإرسالها عبر واتساب
+        window.lastSystemData = {
+            totalWh: getTotalDailyWh(),
+            panelCount: panelCount,
+            panelPower: panelCount * 400,
+            batteryKWh: batteryKWh,
+            inverterVA: inverterPower,
+            controllerAmps: controllerCurrent,
+            totalCost: selectedPrice,
+            batteryType: currentBatteryType,
+            autonomyDays: (systemType === 'emergency') ? emergencyNightHours + ' ساعة ليلاً' : autonomyDays,
+            systemType: systemType,
+            emergencyHours: (systemType === 'emergency') ? emergencyNightHours : null,
+            costDetails: {
+                panels: Math.round(panelsCost),
+                inverter: Math.round(inverterCost),
+                controller: Math.round(controllerCost),
+                accessories: Math.round(accessoriesCost),
+                battery: Math.round(batteryKWh * packages[currentBatteryType].pricePerKwh)
+            }
+        };
     }
-
-    // ---------- تأكيد الطلب عبر واتساب ----------
+    
+    // تحديث أيام الاستقلالية (لـ Off-grid/Hybrid فقط)
+    function updateAutonomy() {
+        let newVal = parseFloat(document.getElementById('autonomyDays').value);
+        if(!isNaN(newVal) && newVal > 0) {
+            autonomyDays = newVal;
+            calculateSystem();
+        }
+    }
+    
+    // إرسال الطلب عبر واتساب مع تفاصيل الأسعار
     function sendOrderWhatsapp() {
-        let message = "";
-        if (currentMode === 'devices' && window.lastOrderData && window.lastOrderData.type === 'custom') {
-            message = `مرحباً، أود تأكيد طلب نظام شمسي (حسب أجهزتي):\n- الاستهلاك اليومي: ${document.getElementById('totalWh').innerText} Wh\n- نوع البطارية: ${document.getElementById('batteryType').options[document.getElementById('batteryType').selectedIndex]?.text || 'AGM'}\n- عدد الألواح: ${document.getElementById('panelCountRes').innerText}\n- سعة التخزين: ${document.getElementById('batteryCapacityRes').innerText} kWh\n- التكلفة التقديرية: ${document.getElementById('totalCost').innerHTML} دج\nالرجاء التواصل لتأكيد التفاصيل.`;
-        } else if (currentMode === 'packages' && window.lastOrderData && window.lastOrderData.type === 'package') {
-            message = `مرحباً، أود تأكيد طلب حزمة جاهزة: ${window.lastOrderData.packageName}\n- السعر: ${window.lastOrderData.totalCost.toLocaleString()} دج\n- المكونات: ${window.lastOrderData.details}\nالرجاء تأكيد الطلب.`;
-        } else {
-            message = `مرحباً، أود الاستفسار عن نظام الطاقة الشمسية.`;
-        }
+        let data = window.lastSystemData;
+        if(!data) return;
+        let batteryTypeName = (data.batteryType === 'agm') ? 'AGM' : (data.batteryType === 'gel' ? 'GEL' : 'Lithium');
+        let systemTypeName = (data.systemType === 'offgrid') ? 'Off-grid (استقلال كامل)' : (data.systemType === 'hybrid' ? 'Hybrid (هجين)' : 'طوارئ (Emergency)');
+        let autonomyText = (data.systemType === 'emergency') ? `${data.emergencyHours} ساعة ليلاً` : `${data.autonomyDays} يوم`;
+        let message = `مرحبًا، أريد طلب نظام طاقة شمسية حسب الحساب الذي قمت به في الموقع:\n` +
+                      `- نوع النظام: ${systemTypeName}\n` +
+                      `- الطاقة اليومية: ${data.totalWh} Wh\n` +
+                      `- الألواح: ${data.panelCount} × 400W (${data.panelPower} Wp)\n` +
+                      `- سعة البطارية (${batteryTypeName}): ${data.batteryKWh} kWh\n` +
+                      `- قدرة العاكس: ${data.inverterVA} VA\n` +
+                      `- منظم الشحن: ${data.controllerAmps} A\n` +
+                      `- مدة التخزين/الطوارئ: ${autonomyText}\n` +
+                      `- تفاصيل التكلفة:\n` +
+                      `   • ألواح: ${data.costDetails.panels.toLocaleString()} دج\n` +
+                      `   • بطارية: ${data.costDetails.battery.toLocaleString()} دج\n` +
+                      `   • عاكس: ${data.costDetails.inverter.toLocaleString()} دج\n` +
+                      `   • منظم: ${data.costDetails.controller.toLocaleString()} دج\n` +
+                      `   • ملحقات: ${data.costDetails.accessories.toLocaleString()} دج\n` +
+                      `- الإجمالي التقريبي: ${Math.round(data.totalCost).toLocaleString()} دج\n` +
+                      `أرجو تأكيد التفاصيل والمتابعة.`;
         let url = `https://wa.me/213541864110?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
     }
-
-    // ---------- معرض المنتجات (صور) ----------
-    const productsData = [
-        { name: "لوح شمسي 400W", price: "13000 دج", img: "https://via.placeholder.com/300x200?text=لوح+شمسي+400W" },
-        { name: "بطارية AGM 12V/200Ah", price: "45000 دج (~1.2kWh)", img: "https://via.placeholder.com/300x200?text=بطارية+AGM" },
-        { name: "عاكس 2000VA", price: "60000 دج", img: "https://via.placeholder.com/300x200?text=عاكس+طاقة" },
-        { name: "منظم شحن MPPT 40A", price: "14000 دج", img: "https://via.placeholder.com/300x200?text=منظم+شحن" }
-    ];
     
-    function renderProducts() {
-        const grid = document.getElementById('productsGrid');
-        if(!grid) return;
-        grid.innerHTML = '';
-        productsData.forEach((prod, idx) => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            const img = document.createElement('img');
-            img.src = prod.img;
-            img.style.width = '100%';
-            img.style.height = '130px';
-            img.style.objectFit = 'cover';
-            img.style.borderRadius = '16px';
-            img.onclick = () => {
-                let newUrl = prompt("أدخل رابط الصورة الجديد:", prod.img);
-                if(newUrl && newUrl.trim()) {
-                    prod.img = newUrl.trim();
-                    renderProducts();
-                }
-            };
-            const nameSpan = document.createElement('div');
-            nameSpan.className = 'product-name';
-            nameSpan.innerText = prod.name;
-            const priceSpan = document.createElement('div');
-            priceSpan.className = 'product-price';
-            priceSpan.innerText = prod.price;
-            const editHint = document.createElement('button');
-            editHint.innerText = '🖼️ تغيير الصورة';
-            editHint.className = 'edit-img-btn';
-            editHint.style.background = '#334155';
-            editHint.style.color = 'white';
-            editHint.style.border = 'none';
-            editHint.style.borderRadius = '20px';
-            editHint.style.padding = '4px 10px';
-            editHint.style.marginTop = '6px';
-            editHint.onclick = () => img.onclick();
-            card.appendChild(img);
-            card.appendChild(nameSpan);
-            card.appendChild(priceSpan);
-            card.appendChild(editHint);
-            grid.appendChild(card);
-        });
-    }
-
-    // ---------- أحداث وتهيئة ----------
-    document.getElementById('addDeviceBtn')?.addEventListener('click', () => {
-        if(currentMode === 'devices') {
-            devices.push({ name: "جهاز جديد", watt: 100, hours: 2, quantity: 1 });
-            renderDevicesTable();
-            calcTotal();
-        }
-    });
-    document.getElementById('calculateBtn')?.addEventListener('click', () => { if(currentMode === 'devices') calcTotal(); });
-    document.getElementById('refreshBatteryBtn')?.addEventListener('click', () => { if(currentMode === 'devices') calcTotal(); });
-    document.getElementById('confirmOrderBtn')?.addEventListener('click', sendOrderWhatsapp);
-    document.getElementById('modeDevicesBtn')?.addEventListener('click', () => setMode('devices'));
-    document.getElementById('modePackagesBtn')?.addEventListener('click', () => setMode('packages'));
+    // ربط الأحداث
+    document.getElementById('addDeviceBtn').onclick = () => {
+        devices.push({ name: "جهاز جديد", watt: 100, hours: 2, quantity: 1 });
+        renderDevicesTable();
+        calculateSystem();
+    };
+    document.getElementById('calculateBtn').onclick = () => calculateSystem();
+    document.getElementById('updateAutonomyBtn').onclick = updateAutonomy;
+    document.getElementById('updateEmergencyBtn').onclick = updateEmergencyHours;
+    document.getElementById('orderWhatsappBtn').onclick = sendOrderWhatsapp;
+    document.getElementById('heroWhatsappBtn').onclick = sendOrderWhatsapp;
     
-    // تهيئة
+    // تهيئة الصفحة
     loadDevices();
-    renderPackages();
-    renderProducts();
-    setMode('devices'); // وضع الأجهزة افتراضياً
-    // تحديد أول حزمة
-    selectedPackage = packages[0];
+    window.setSystemType = setSystemType;
+    // إظهار خيارات الطوارئ مخفية بداية
+    document.getElementById('emergencyOptions').style.display = 'none';
+    document.getElementById('autonomyControl').style.display = 'flex';
 </script>
 </body>
 </html>
