@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>حاسبة الطاقة الشمسية - أنظمة Off-grid / Hybrid / طوارئ مع تفاصيل الأسعار (DZD)</title>
+    <title>حاسبة الطاقة الشمسية - Off-grid / Hybrid / طوارئ مع تقرير PDF (DZD)</title>
     <style>
         * {
             box-sizing: border-box;
@@ -161,6 +161,7 @@
         .btn-danger { background: #ef4444; color: white; }
         .btn-success { background: #2ecc71; color: white; }
         .btn-whatsapp { background: #25D366; color: white; }
+        .btn-print { background: #3498db; color: white; }
         .result-box {
             background: #fef9e6;
             border-radius: 20px;
@@ -369,7 +370,10 @@
                     <div class="packages-row" id="packagesContainer">
                         <!-- باقات البطاريات -->
                     </div>
-                    <button id="orderWhatsappBtn" class="btn btn-whatsapp" style="width:100%; margin-top:10px;">📲 اطلب هذا النظام عبر واتساب</button>
+                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                        <button id="printReportBtn" class="btn btn-print">🖨️ اطبع التقرير</button>
+                        <button id="orderWhatsappBtn" class="btn btn-whatsapp">📲 اطلب هذا النظام عبر واتساب</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -544,7 +548,7 @@
         const panelPrice = 23000;      // سعر لوح 400W
         let panelsCost = panelCount * panelPrice;
         let inverterCost = inverterPower * 35;     // 35 دج/واط
-        let controllerCost = controllerCurrent * 400;
+        let controllerCost = controllerCurrent * 400;  // MPPT
         let accessoriesCost = panelsCost * 0.15;
         let fixedCost = panelsCost + inverterCost + controllerCost + accessoriesCost;
         
@@ -552,8 +556,8 @@
         const costDetailsDiv = document.getElementById('costDetails');
         costDetailsDiv.innerHTML = `
             <div class="result-item"><span>🟡 الألواح (${panelCount} × 400W):</span><span>${Math.round(panelsCost).toLocaleString()} دج</span></div>
+            <div class="result-item"><span>🔵 منظم الشحن MPPT (${controllerCurrent} A):</span><span>${Math.round(controllerCost).toLocaleString()} دج</span></div>
             <div class="result-item"><span>🟢 العاكس (${inverterPower} VA):</span><span>${Math.round(inverterCost).toLocaleString()} دج</span></div>
-            <div class="result-item"><span>🔵 منظم الشحن (${controllerCurrent} A):</span><span>${Math.round(controllerCost).toLocaleString()} دج</span></div>
             <div class="result-item"><span>📦 هياكل وكابلات:</span><span>${Math.round(accessoriesCost).toLocaleString()} دج</span></div>
         `;
         
@@ -581,7 +585,7 @@
         }
         document.getElementById('totalCostDisplay').innerHTML = Math.round(selectedPrice).toLocaleString();
         
-        // تخزين البيانات لإرسالها عبر واتساب
+        // تخزين البيانات لإرسالها عبر واتساب والطباعة
         window.lastSystemData = {
             totalWh: getTotalDailyWh(),
             panelCount: panelCount,
@@ -600,7 +604,8 @@
                 controller: Math.round(controllerCost),
                 accessories: Math.round(accessoriesCost),
                 battery: Math.round(batteryKWh * packages[currentBatteryType].pricePerKwh)
-            }
+            },
+            devicesList: devices.map(d => ({ name: d.name, watt: d.watt, hours: d.hours, qty: d.quantity, daily: d.watt*d.hours*d.quantity }))
         };
     }
     
@@ -611,6 +616,79 @@
             autonomyDays = newVal;
             calculateSystem();
         }
+    }
+    
+    // ---------- طباعة التقرير (PDF) ----------
+    function printReport() {
+        let data = window.lastSystemData;
+        if(!data) {
+            alert("الرجاء حساب النظام أولاً.");
+            return;
+        }
+        
+        // إنشاء نافذة جديدة للطباعة
+        let printWindow = window.open('', '_blank', 'width=900,height=700');
+        printWindow.document.write(`
+            <!DOCTYPE html>
+            <html dir="rtl">
+            <head>
+                <meta charset="UTF-8">
+                <title>تقرير نظام الطاقة الشمسية</title>
+                <style>
+                    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 30px; line-height: 1.6; }
+                    h1 { color: #1e3c72; border-bottom: 2px solid #f39c12; padding-bottom: 10px; }
+                    h2 { color: #2c5282; margin-top: 25px; }
+                    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+                    th, td { border: 1px solid #cbd5e1; padding: 8px; text-align: center; }
+                    th { background: #f1f5f9; }
+                    .total { font-weight: bold; font-size: 1.2em; color: #e67e22; }
+                    .footer { margin-top: 30px; font-size: 0.8em; color: #475569; text-align: center; border-top: 1px solid #ccc; padding-top: 15px; }
+                    .cost-detail { background: #fef9e6; padding: 15px; border-radius: 12px; margin: 15px 0; }
+                </style>
+            </head>
+            <body>
+                <h1>تقرير نظام الطاقة الشمسية</h1>
+                <p><strong>تاريخ التقرير:</strong> ${new Date().toLocaleString('ar-EG')}</p>
+                
+                <h2>📋 الأجهزة المستخدمة</h2>
+                <table>
+                    <thead><tr><th>الجهاز</th><th>القدرة (واط)</th><th>ساعات/يوم</th><th>الكمية</th><th>الاستهلاك اليومي (Wh)</th></tr></thead>
+                    <tbody>
+                        ${data.devicesList.map(d => `<tr><td>${d.name}</td><td>${d.watt}</td><td>${d.hours}</td><td>${d.qty}</td><td>${d.daily}</td></tr>`).join('')}
+                    </tbody>
+                </table>
+                <p><strong>إجمالي الطاقة اليومية:</strong> ${data.totalWh} Wh</p>
+                
+                <h2>⚙️ نتائج النظام</h2>
+                <table>
+                    <tr><th>نوع النظام</th><td>${data.systemType === 'offgrid' ? 'Off-grid (استقلال كامل)' : (data.systemType === 'hybrid' ? 'Hybrid (هجين)' : 'طوارئ (Emergency)')}</td></tr>
+                    <tr><th>قدرة الألواح المطلوبة (Peak)</th><td>${data.panelPower} Wp (${data.panelCount} × 400W)</td></tr>
+                    <tr><th>سعة البطاريات</th><td>${data.batteryKWh} kWh</td></tr>
+                    <tr><th>قدرة العاكس</th><td>${data.inverterVA} VA</td></tr>
+                    <tr><th>تيار منظم الشحن MPPT</th><td>${data.controllerAmps} A</td></tr>
+                    <tr><th>مدة التخزين/الطوارئ</th><td>${data.autonomyDays}</td></tr>
+                </table>
+                
+                <h2>💰 تفاصيل التكلفة (دينار جزائري)</h2>
+                <div class="cost-detail">
+                    <p><strong>🟡 الألواح:</strong> ${data.costDetails.panels.toLocaleString()} دج</p>
+                    <p><strong>🔵 منظم الشحن MPPT:</strong> ${data.costDetails.controller.toLocaleString()} دج</p>
+                    <p><strong>🟢 العاكس:</strong> ${data.costDetails.inverter.toLocaleString()} دج</p>
+                    <p><strong>📦 هياكل وكابلات:</strong> ${data.costDetails.accessories.toLocaleString()} دج</p>
+                    <p><strong>🔋 البطارية (${data.batteryType.toUpperCase()}):</strong> ${data.costDetails.battery.toLocaleString()} دج</p>
+                    <hr>
+                    <p class="total">💰 الإجمالي التقريبي: ${Math.round(data.totalCost).toLocaleString()} دج</p>
+                </div>
+                
+                <div class="footer">
+                    هذا التقرير تم إنشاؤه بواسطة حاسبة الطاقة الشمسية. الأسعار تقديرية وقد تختلف حسب السوق. يفضل استشارة فني مختص.
+                </div>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+        printWindow.close();
     }
     
     // إرسال الطلب عبر واتساب مع تفاصيل الأسعار
@@ -626,13 +704,13 @@
                       `- الألواح: ${data.panelCount} × 400W (${data.panelPower} Wp)\n` +
                       `- سعة البطارية (${batteryTypeName}): ${data.batteryKWh} kWh\n` +
                       `- قدرة العاكس: ${data.inverterVA} VA\n` +
-                      `- منظم الشحن: ${data.controllerAmps} A\n` +
+                      `- منظم الشحن MPPT: ${data.controllerAmps} A\n` +
                       `- مدة التخزين/الطوارئ: ${autonomyText}\n` +
                       `- تفاصيل التكلفة:\n` +
                       `   • ألواح: ${data.costDetails.panels.toLocaleString()} دج\n` +
                       `   • بطارية: ${data.costDetails.battery.toLocaleString()} دج\n` +
                       `   • عاكس: ${data.costDetails.inverter.toLocaleString()} دج\n` +
-                      `   • منظم: ${data.costDetails.controller.toLocaleString()} دج\n` +
+                      `   • منظم MPPT: ${data.costDetails.controller.toLocaleString()} دج\n` +
                       `   • ملحقات: ${data.costDetails.accessories.toLocaleString()} دج\n` +
                       `- الإجمالي التقريبي: ${Math.round(data.totalCost).toLocaleString()} دج\n` +
                       `أرجو تأكيد التفاصيل والمتابعة.`;
@@ -651,11 +729,11 @@
     document.getElementById('updateEmergencyBtn').onclick = updateEmergencyHours;
     document.getElementById('orderWhatsappBtn').onclick = sendOrderWhatsapp;
     document.getElementById('heroWhatsappBtn').onclick = sendOrderWhatsapp;
+    document.getElementById('printReportBtn').onclick = printReport;
     
     // تهيئة الصفحة
     loadDevices();
     window.setSystemType = setSystemType;
-    // إظهار خيارات الطوارئ مخفية بداية
     document.getElementById('emergencyOptions').style.display = 'none';
     document.getElementById('autonomyControl').style.display = 'flex';
 </script>
